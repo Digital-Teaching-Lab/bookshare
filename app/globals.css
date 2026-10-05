@@ -101,3 +101,11 @@ input::placeholder,textarea::placeholder{color:#738279}
 .login-main{max-width:620px}.login-main form{margin-top:24px}.login-main .field{margin-top:20px}.header-account{display:flex;gap:14px;align-items:center}.header-account button{font-size:.8rem;padding:8px 12px;min-height:40px}@media(max-width:760px){.header-account small{display:none}}
 
 .recovery-link{display:block;margin:18px auto 0;font-size:.95rem!important;background:transparent!important;border:0!important;box-shadow:none!important;text-decoration:underline}.reset-password-form .field{margin-top:20px}
+/* Give each phone toolbar control enough room for its complete label. */
+@media screen and (max-width:480px){
+ .toolbar{display:grid;grid-template-columns:minmax(0,1fr);gap:10px}
+ .toolbar p{margin:0;font-size:.9rem}
+ .toolbar input{min-width:0;width:100%;font-size:.95rem}
+ .toolbar button[data-slot=button],.toolbar button{width:100%;min-width:0;font-size:.85rem;padding:12px 10px;white-space:nowrap;overflow-wrap:normal;word-break:normal;gap:8px}
+ .toolbar button svg{flex-shrink:0;width:18px;height:18px}
+}
