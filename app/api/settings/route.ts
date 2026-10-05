@@ -1,0 +1,5 @@
+import {env} from 'cloudflare:workers';
+import {getChatGPTUser} from '../../chatgpt-auth';
+async function init(){await env.DB!.prepare('CREATE TABLE IF NOT EXISTS teacher_settings (owner TEXT PRIMARY KEY, class_name TEXT NOT NULL)').run()}
+export async function GET(){const u=await getChatGPTUser();if(!u)return Response.json({error:'로그인이 필요해요.'},{status:401});await init();const row=await env.DB!.prepare('SELECT class_name FROM teacher_settings WHERE owner=?').bind(u.userId).first<{class_name:string}>();return Response.json({className:row?.class_name||'우리 반'},{headers:{'Cache-Control':'no-store'}})}
+export async function PUT(req:Request){const u=await getChatGPTUser();if(!u)return Response.json({error:'로그인이 필요해요.'},{status:401});const b=await req.json() as {className?:string};const name=typeof b.className==='string'?b.className.trim().slice(0,40):'';if(!name)return Response.json({error:'반 이름을 입력해주세요.'},{status:400});await init();await env.DB!.prepare('INSERT INTO teacher_settings (owner,class_name) VALUES (?,?) ON CONFLICT(owner) DO UPDATE SET class_name=excluded.class_name').bind(u.userId,name).run();return Response.json({ok:true})}
