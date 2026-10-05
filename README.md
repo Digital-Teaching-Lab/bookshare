@@ -1,37 +1,77 @@
-# 우리 반 그림책장
+# Bookshare — 우리 반 그림책장
 
-만 3~5세 유아가 교사와 함께 만드는 책 추천 카드입니다.
+Next.js + Vercel + Supabase로 배포하는 유아 그림책 추천 웹앱입니다.
+교사는 이메일·비밀번호로 로그인하며, 반 이름·책 기록·사진·녹음은 교사별로 분리됩니다.
+사진과 녹음은 비공개 Supabase Storage에 직접 업로드합니다. 서버에는 관리자 키가 필요하지 않습니다.
 
-## 사용 순서
-1. 교사가 로그인한 휴대폰·태블릿에서 이름을 입력합니다.
-2. 책 또는 활동 사진을 찍거나 사진첩에서 고릅니다.
-3. 책 제목을 적습니다. API 연결 후에는 예스24 검색 결과를 선택할 수 있습니다.
-4. 추천 이유를 글로 입력하거나 최대 2분 동안 녹음합니다.
-5. 저장 후 같은 교사 계정으로 컴퓨터에서 모아봅니다.
-6. 카드별 또는 검색된 카드 전체를 A4로 인쇄합니다. 인쇄 창에서 PDF로 저장할 수도 있습니다.
+## 1. Supabase 준비
 
-## 접근과 저장
-비공개 Sites 배포와 교사 계정별 서버 권한 확인을 사용합니다. 사진·음성은 R2, 카드 정보는 D1에 저장됩니다. 같은 계정의 기기들이 기록을 공유합니다. 다른 교사 계정과 학급을 공유하는 기능은 아직 없습니다. 유아는 교사가 로그인한 기기에서 함께 작성합니다.
+1. https://supabase.com/dashboard 에서 가입하고 `bookshare` 프로젝트를 만듭니다.
+2. SQL Editor → New query에서 `supabase/setup.sql` 내용을 붙여 넣고 Run을 누릅니다.
+3. 프로젝트의 Connect 창에서 Project URL과 Publishable key를 확인합니다.
+4. Authentication → URL Configuration에서 배포 주소를 Site URL로 지정합니다.
+   Redirect URLs에 `https://배포주소/auth/callback`을 추가합니다.
+   로컬 테스트 시에는 `http://127.0.0.1:5174/auth/callback`도 추가합니다.
+5. Authentication의 이메일 가입과 이메일 인증을 사용합니다. 실제로 여러 교사가 가입할 때는
+   이메일 발송 제한을 확인하고 Custom SMTP를 설정합니다.
 
-## 책 API 연결
-- 예스24: https://developers.yes24.com/ 에서 API 키를 발급한 뒤 배포 환경의 비밀 값 YES24_API_KEY에 등록합니다.
-- 키를 코드나 브라우저에 넣지 않습니다. API는 서버에서 호출합니다.
-- 키가 없는 현재 상태에서는 검색 연결 안내가 표시되며 직접 입력한 제목으로 카드 저장이 가능합니다. 외부 API의 실응답 검증은 키 연결 후 필요합니다.
+## 2. GitHub 코드 업데이트
 
-## 음성과 사진
-녹음은 HTTPS에서 마이크 권한이 필요합니다. 음성 받아쓰기는 브라우저 지원 및 음성 서비스 연결에 따라 달라집니다. 받아쓰기 지원이 없어도 녹음과 글 입력을 사용할 수 있습니다. 녹음 파일은 종이에서 재생되지 않으므로 글을 함께 적으면 인쇄물에 추천 이유가 나옵니다. 사진은 브라우저에서 최대 1600px JPEG로 변환합니다. 기기에서 지원하지 않는 사진 형식은 JPG로 바꿔 주세요.
+새 ZIP을 압축 해제하고 **폴더 안의 내용**을 저장소 최상위에 업로드합니다.
+`package.json`, `package-lock.json`, `tsconfig.json`, `app` 등 같은 이름의 파일은 새 버전으로 교체합니다.
+기존 `build`, `db`, `drizzle`, `.openai`, `vite.config.ts` 등은 이 버전에서 사용하지 않습니다.
+불필요한 이전 파일이 남아 있어도 새 tsconfig가 해당 파일을 검사하지 않습니다.
+`.env.local`과 node_modules는 업로드하지 않습니다. 제공 ZIP에는 포함되지 않습니다.
 
-## 기술 구성
-React + TypeScript + Vite 기반 Vinext, Cloudflare Worker, D1, R2. 이번 버전은 Sites 비공개 배포를 사용하며 Vercel 배포 구성은 포함하지 않았습니다.
+## 3. Vercel 배포
 
-## 개발
-Node.js >=22.13 필요. npm install, npm run dev, npm run build. DB 스키마는 db/schema.ts, 마이그레이션은 drizzle/에 있습니다. 로컬 로그인은 개발 서버의 /signin-with-chatgpt?return_to=/ 를 사용합니다.
+1. https://vercel.com 에서 GitHub 계정으로 가입합니다.
+2. Add New → Project → GitHub 저장소 `Digital-Teaching-Lab/bookshare`를 Import합니다.
+3. Framework Preset은 Next.js, Root Directory는 저장소 최상위입니다.
+4. Environment Variables에 아래 세 값을 등록합니다.
 
-## 확인 상태
-TypeScript 검사와 배포용 빌드가 통과했습니다. 로컬 서버에서 로그인 필요 여부, 다른 사용자의 사진 접근 거부, 필수 입력 검증, 사진 업로드와 조회, 카드 저장과 재조회, 저장 재시도의 중복 방지, 자동 날짜를 확인했습니다. 실제 휴대폰의 카메라·마이크, 종이 인쇄, API 키를 사용하는 책 검색은 현장 확인이 필요합니다.
+| 이름 | 값 |
+| --- | --- |
+| NEXT_PUBLIC_SUPABASE_URL | Supabase Project URL |
+| NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY | Supabase Publishable key (구형 프로젝트는 anon 키) |
+| YES24_API_KEY | 이미 발급받은 예스24 키 |
 
-비공개 Site는 등록되었지만 소스 전송 단계가 실행 환경의 자동 승인 정책으로 거부되어 아직 배포되지 않았습니다. .openai/hosting.json의 project_id를 보존하고 동일 Site로 배포를 재개해야 합니다.
+`SUPABASE_SERVICE_ROLE_KEY` 또는 secret 키는 쓰지 않습니다.
+예스24 키는 `NEXT_PUBLIC_`로 시작하는 이름에 넣지 않습니다.
+5. Deploy 후 나온 URL을 Supabase의 Site URL과 Redirect URLs에 반영합니다.
+6. 사이트에서 선생님 가입 → 이메일 확인 → 로그인 → 반 이름 저장을 합니다.
 
-## 음성 입력
-추천 이유는 휴대폰 키보드의 음성 입력을 이용할 수 있습니다. 앱의 녹음은 별도로 보관되며 다시 녹음할 수 있습니다. 별도의 음성 변환 API는 사용하지 않습니다.
+환경 변수를 바꿨다면 Vercel에서 Redeploy가 필요합니다.
 
+## 4. 확인할 사항
+
+- 교사 A와 교사 B를 각각 가입해 서로의 반 이름과 기록이 보이지 않는지 확인합니다.
+- 휴대폰에서 사진·녹음·책 검색·저장을 하고 컴퓨터에서 같은 계정으로 확인합니다.
+- 수정·삭제·녹음 재생과 카드/책장 인쇄를 확인합니다.
+- 브라우저 인쇄 설정의 머리글과 바닥글을 끄면 인쇄 시각과 URL이 없어집니다.
+- 기존 로컬 개발 화면에 남긴 기록은 새 Supabase 프로젝트로 자동 이전되지 않습니다.
+- 추천 카드 삭제는 기록을 삭제합니다. 저장 파일은 남을 수 있으며 Storage에서 별도로 관리합니다.
+- 녹음이 최대 2분이고 파일은 12MB까지 허용됩니다.
+
+## 로컬 실행
+
+`.env.example`을 `.env.local`로 복사하고 값을 채운 뒤:
+
+```sh
+npm install
+npm run dev
+```
+
+개발 주소는 http://127.0.0.1:5174 입니다.
+
+```sh
+npm run check
+npm run build
+```
+
+설정 전에도 빌드는 됩니다. 설정되지 않은 로그인 화면은 연결 준비 안내를 표시합니다.
+실제 교사별 저장과 재생은 Supabase 설정 후 확인해야 합니다.
+
+공식 문서: https://supabase.com/docs/guides/auth/server-side/nextjs
+https://supabase.com/docs/guides/storage/security/access-control
+https://vercel.com/docs/frameworks/full-stack/nextjs

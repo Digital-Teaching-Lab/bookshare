@@ -97,3 +97,5 @@ input::placeholder,textarea::placeholder{color:#738279}
 .shelf-choice{position:fixed;inset:0;margin:auto}@media print{body[data-print-layout="cards"]:not([data-print-id]) .shelf-print-excluded{display:none!important}body[data-print-layout="cards"]:not([data-print-id]) .cards.bookshelf{grid-template-columns:1fr;gap:8mm}body[data-print-layout="cards"]:not([data-print-id]) .shelf-card{width:150mm;max-width:100%;margin:0 auto;break-inside:avoid;page-break-inside:avoid}body[data-print-layout="cards"] .shelf-card .book-pair{display:flex!important}}
 
 .voice-player{margin:22px 0;padding:18px;background:#edf7ea;border:1px solid #c8ddc2;border-radius:20px}.voice-player h3{font-family:var(--title-font);font-size:1.1rem;margin:0}.voice-player audio{display:block;width:100%;margin-top:12px}
+
+.login-main{max-width:620px}.login-main form{margin-top:24px}.login-main .field{margin-top:20px}.header-account{display:flex;gap:14px;align-items:center}.header-account button{font-size:.8rem;padding:8px 12px;min-height:40px}@media(max-width:760px){.header-account small{display:none}}

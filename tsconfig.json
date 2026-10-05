@@ -26,22 +26,23 @@
       "@/*": [
         "./*"
       ]
-    },
-    "types": [
-      "node",
-      "@cloudflare/workers-types"
-    ]
+    }
   },
   "include": [
     "next-env.d.ts",
-    "**/*.ts",
-    "**/*.tsx",
+    "app/**/*.ts",
+    "app/**/*.tsx",
+    "lib/supabase/**/*.ts",
+    "lib/utils.ts",
+    "components/ui/button.tsx",
+    "components/ui/input.tsx",
+    "components/ui/textarea.tsx",
+    "proxy.ts",
+    "next.config.ts",
     ".next/types/**/*.ts",
-    ".next/dev/types/**/*.ts",
-    "**/*.mts"
+    ".next/dev/types/**/*.ts"
   ],
   "exclude": [
-    "node_modules",
-    "examples"
+    "node_modules"
   ]
 }

@@ -1,4 +1,5 @@
+import {redirect} from 'next/navigation';
+import {currentTeacher} from '@/lib/supabase/server';
 import BookApp from './book-app';
-import { requireChatGPTUser } from './chatgpt-auth';
-export const dynamic = 'force-dynamic';
-export default async function Home(){ await requireChatGPTUser('/'); return <BookApp/>; }
+export const dynamic='force-dynamic';
+export default async function Home(){if(!await currentTeacher())redirect('/login');return <BookApp/>}
