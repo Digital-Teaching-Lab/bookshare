@@ -8,7 +8,7 @@ export default function LoginForm(){
  async function submit(e:React.FormEvent){e.preventDefault();setBusy(true);setMessage('');try{
   const db=browserClient();
   if(mode==='recover'){
-   const {error}=await db.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+'/auth/recovery'});if(error)throw error;setMessage('가입된 이메일이라면 비밀번호 변경 링크를 보내드려요. 스팸함도 확인해주세요. 링크는 요청한 기기와 브라우저에서 열어주세요.');
+   const {error}=await db.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+'/auth/recovery'});if(error)throw error;setMessage('가입된 이메일이라면 비밀번호 변경 링크를 보내드려요. 스팸함도 확인해주세요.');
   }else if(mode==='signup'){
    const {data,error}=await db.auth.signUp({email,password,options:{emailRedirectTo:window.location.origin+'/auth/callback'}});
    if(error)throw error;if(data.session){window.location.assign('/');return}
