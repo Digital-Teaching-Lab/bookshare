@@ -99,3 +99,5 @@ input::placeholder,textarea::placeholder{color:#738279}
 .voice-player{margin:22px 0;padding:18px;background:#edf7ea;border:1px solid #c8ddc2;border-radius:20px}.voice-player h3{font-family:var(--title-font);font-size:1.1rem;margin:0}.voice-player audio{display:block;width:100%;margin-top:12px}
 
 .login-main{max-width:620px}.login-main form{margin-top:24px}.login-main .field{margin-top:20px}.header-account{display:flex;gap:14px;align-items:center}.header-account button{font-size:.8rem;padding:8px 12px;min-height:40px}@media(max-width:760px){.header-account small{display:none}}
+
+.recovery-link{display:block;margin:18px auto 0;font-size:.95rem!important;background:transparent!important;border:0!important;box-shadow:none!important;text-decoration:underline}.reset-password-form .field{margin-top:20px}
